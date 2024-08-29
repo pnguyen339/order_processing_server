@@ -1,0 +1,14 @@
+altgraph==0.17.4
+certifi==2024.7.4
+charset-normalizer==3.3.2
+idna==3.8
+logging==0.4.9.6
+macholib==1.16.3
+packaging==24.1
+pillow==10.4.0
+pyinstaller==6.10.0
+pyinstaller-hooks-contrib==2024.8
+rectpack==0.2.2
+requests==2.32.3
+setuptools==74.0.0
+urllib3==2.2.2
