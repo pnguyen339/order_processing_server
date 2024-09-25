@@ -49,12 +49,13 @@ def fetch_latest_group_order_list():
 
         # Current day in the format of YYYY-MM-DD
         current_day = datetime.now().strftime('%Y-%m-%d')
-        #current_day = '2024-08-28'
-        # Iterate through the data_table and find entries where the createdAt date is the same as today
+        # current_day = '2024-08-28'  # Uncomment for testing with a specific date
+
+        # Iterate through the data_table and find entries where the createdAt date is today or in the future
         latest_group_orders_list = []
         for entry in data_table:
             created_at = entry['createdAt'].split("T")[0]
-            if created_at == current_day:
+            if created_at >= current_day:
                 latest_group_orders_list.append(entry['code'])
         
         return latest_group_orders_list

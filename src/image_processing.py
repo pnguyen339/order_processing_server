@@ -24,7 +24,7 @@ def crop_image(input_image_path, output_image_path, margin, dpi):
     cropped_image = image.crop(bbox_with_margin)
 
     # Save the cropped image
-    cropped_image.save(output_image_path, dpi=(dpi, dpi))
+    cropped_image.save(output_image_path, dpi=(dpi, dpi), format="PNG")
 
 def resize_image(input_image_path, output_image_path, max_width_inches, max_height_inches, dpi, margin):
     # Open the original image
@@ -44,10 +44,6 @@ def resize_image(input_image_path, output_image_path, max_width_inches, max_heig
     target_width_pixels = round(max_width_inches * dpi)
     max_height_pixels = round(max_height_inches * dpi)
 
-    # If original width is smaller than target width, just return.
-    if original_width < target_width_pixels:
-        target_width_pixels = original_width
-
     # Calculate the aspect ratio of the original image
     aspect_ratio = original_height / original_width
 
@@ -58,14 +54,14 @@ def resize_image(input_image_path, output_image_path, max_width_inches, max_heig
     if target_height_pixels > max_height_pixels:
         # Calculate the aspect ratio of the original image
         target_height_pixels = max_height_pixels
-        aspect_ratio2 = target_width_pixels / target_height_pixels
+        aspect_ratio2 =  original_width/original_height
         target_width_pixels = round(target_height_pixels*aspect_ratio2)
 
     # Resize the image maintaining the aspect ratio
     resized_image = cropped_image.resize((target_width_pixels, target_height_pixels), Image.LANCZOS)
 
     # Save the resized image
-    resized_image.save(output_image_path, dpi=(dpi, dpi))
+    resized_image.save(output_image_path, dpi=(dpi, dpi), format="PNG")
     logging.info(f"Image resize to {target_width_pixels} x {target_height_pixels} pixel with dpi {dpi}")
 
 class Paper:
@@ -124,15 +120,7 @@ def pack_and_combine_images(input_image_folder, output_image_path, paper_width_s
         final_img.paste(img, (x, y))
 
     # Save the final image
-    final_img.save(output_image_path, dpi=(dpi, dpi))
-
-#the only way to check for if an image is a logo is to see if it is smaller than a certain size
-#size_inches=(width_inches, height_inches)
-def check_image_is_logo(input_image_path, size_inches, dpi):
-    width_pixels, height_pixels = size_inches[0] * dpi, size_inches[1] * dpi
-    original_image = Image.open(input_image_path)
-    w, h = original_image.size
-    return w<=width_pixels and h<=height_pixels
+    final_img.save(output_image_path, dpi=(dpi, dpi), format="PNG")
 
 def add_text_to_existing_image(input_path,above_text, below_text, output_path):
     # Open the existing image
@@ -171,4 +159,4 @@ def add_text_to_existing_image(input_path,above_text, below_text, output_path):
     draw.text((x_below, y_below), below_text, font=font, fill=text_color)
 
     # Save the new image to a file
-    new_image.save(output_path)
+    new_image.save(output_path, format="PNG")
