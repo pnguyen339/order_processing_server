@@ -1,0 +1,6 @@
+processed_order
+log
+venv
+.DS_Store
+/src/__pycache__
+*.pyc
