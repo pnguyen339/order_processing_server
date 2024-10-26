@@ -16,19 +16,16 @@ def process_check_for_new_order(shared_path, next_process_work_queue):
         try:
             logging.info("Checking to see if there is new group order")
             group_order_list = fetch_latest_group_order_list()
-            new_group_order_id_list = []
+            
             for group_order_id in group_order_list:
                 dir_path = os.path.join(shared_path, group_order_id)
                 if not os.path.exists(dir_path):
+                    new_group_order_id_list = []
                     logging.info(f"Proccessing Group Order ID {group_order_id}")
                     new_group_order_id_list.append(group_order_id)
-                    
-
-            data_dict = fetch_print_images_base_group_order(new_group_order_id_list)
-            create_folders_and_download_images(data_dict, shared_path)
-            
-            for group_order_id in new_group_order_id_list:
-                next_process_work_queue.put(group_order_id)
+                    data_dict = fetch_print_images_base_group_order(new_group_order_id_list)
+                    create_folders_and_download_images(data_dict, shared_path)
+                    next_process_work_queue.put(group_order_id)
 
             #Return this script every 5 minutes
             time.sleep(5*60)  
@@ -105,8 +102,8 @@ def process_and_combine_images(next_process_work_queue, max_width_size, dpi, mar
         logging.info(f"Process two received KeyboardInterrupt. Exiting...")
 
 # if __name__ == "__main__":
-#     dest_folder = "processed_order"
-#     next_process_work_queue = multiprocessing.Queue()
-#     #process_check_for_new_order(dest_folder, next_process_work_queue)
-#     next_process_work_queue.put("GROUP0000000072")
-#     process_and_combine_images(next_process_work_queue, 22, 300, .5, dest_folder, 20)
+#      dest_folder = "processed_order"
+#      next_process_work_queue = multiprocessing.Queue()
+#      process_check_for_new_order(dest_folder, next_process_work_queue)
+#      #next_process_work_queue.put("GROUP0000000443")
+#      process_and_combine_images(next_process_work_queue, 22, 300, .5, dest_folder, 20)
