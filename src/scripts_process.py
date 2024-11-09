@@ -5,6 +5,29 @@ import multiprocessing
 import logging
 import os
 import time
+import shutil
+from datetime import datetime, timedelta
+
+def delete_old_files_and_folders(folder_path):
+    # Calculate the cutoff date (two weeks ago from today)
+    cutoff_date = datetime.now() - timedelta(weeks=2)
+    
+    # Iterate over all items in the specified folder
+    for item_name in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item_name)
+        
+        # Get the creation time of the item
+        creation_time = os.path.getctime(item_path)
+        creation_date = datetime.fromtimestamp(creation_time)
+        
+        # Check if the item is older than two weeks and delete accordingly
+        if creation_date < cutoff_date:
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+                print(f"Deleted file: {item_path}")
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)
+                print(f"Deleted directory: {item_path}")
 
 def process_check_for_new_order(shared_path, next_process_work_queue):
     setup_logging()
@@ -28,6 +51,7 @@ def process_check_for_new_order(shared_path, next_process_work_queue):
                     next_process_work_queue.put(group_order_id)
 
             #Return this script every 5 minutes
+            delete_old_files_and_folders(shared_path)
             time.sleep(5*60)  
         except KeyboardInterrupt:
             logging.info(f"Process one received KeyboardInterrupt. Exiting...")
